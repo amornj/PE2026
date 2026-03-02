@@ -10,6 +10,7 @@ const navLinks = [
   { href: '/assessment', label: 'Assessment' },
   { href: '/calculators', label: 'Calculators' },
   { href: '/reference', label: 'Reference' },
+  { href: '/chat', label: 'Ask PE Guide' },
 ];
 
 export function Header() {

@@ -26,7 +26,7 @@ src/
     management/   # Anticoagulation, advanced therapy, IVC filter, follow-up logic
     ddimer.ts     # Age-adjusted D-dimer, YEARS algorithm
     utils.ts      # cn() utility
-  store/          # Zustand store (assessmentStore.ts) — no persistence
+  store/          # Zustand stores (assessmentStore.ts, chatStore.ts) — no persistence
   components/
     ui/           # Reusable primitives (Button, Card, Badge, RadioGroup, Checkbox, NumberInput, Alert, ProgressBar, Accordion, Tabs)
     layout/       # Header, Footer, MobileNav, WizardStepper, PageContainer
@@ -36,7 +36,9 @@ src/
     page.tsx              # Landing page
     assessment/           # 4-step wizard (evaluation, stratification, management, followup)
     calculators/          # 6 standalone calculators (wells, geneva, pesi, spesi, bova, hestia)
+    chat/                 # AI chat — NotebookLM-powered Q&A with read-aloud
     reference/            # Quick reference tables
+    api/chat/             # Server-side proxy to NotebookLM
 ```
 
 ## Key Design Patterns
@@ -70,6 +72,9 @@ Follows the guideline's Figure 3 flowchart:
 - **Low PTP (<15%)**: PERC first → if negative, PE excluded; if positive → D-dimer + YEARS
 - **Intermediate PTP (15–50%)**: D-dimer + YEARS directly
 - **High PTP (>50%)**: Straight to imaging, no D-dimer
+
+### Chat persistence and read-aloud
+Chat messages are stored in a Zustand store (`chatStore.ts`) so they survive client-side navigation but are cleared on page refresh (no localStorage). Assistant responses can be read aloud using the browser's Web Speech API — the speak button appears on each assistant message bubble.
 
 ### COR/LOE badges
 Every recommendation displays Class of Recommendation and Level of Evidence badges. Colors defined in `src/types/guideline.ts`.

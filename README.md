@@ -23,6 +23,10 @@ This app guides clinicians through the new PE clinical category system (Categori
 - Hestia Criteria
 - PERC Rule-out Criteria
 
+### Ask PE Guide (AI Chat)
+
+Ask natural-language questions about the guideline, powered by NotebookLM. Responses include source citations and can be read aloud via the browser's built-in text-to-speech. Chat history persists across page navigation within a session.
+
 ### Smart Data Sync
 
 Overlapping clinical findings entered in Wells/Geneva automatically populate PERC and YEARS criteria - no duplicate data entry.

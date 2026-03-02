@@ -2,7 +2,7 @@
 
 import { useEffect } from 'react';
 import Link from 'next/link';
-import { Activity, Calculator, ClipboardList, BookOpen, Home, X } from 'lucide-react';
+import { Activity, Calculator, ClipboardList, BookOpen, Home, MessageCircle, X } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
 const navItems = [
@@ -10,6 +10,7 @@ const navItems = [
   { href: '/assessment', label: 'Assessment', icon: ClipboardList },
   { href: '/calculators', label: 'Calculators', icon: Calculator },
   { href: '/reference', label: 'Reference', icon: BookOpen },
+  { href: '/chat', label: 'Ask PE Guide', icon: MessageCircle },
 ];
 
 export interface MobileNavProps {

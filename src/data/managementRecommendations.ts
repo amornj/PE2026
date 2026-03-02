@@ -1,0 +1,327 @@
+import { CategoryManagement } from '@/types/management';
+
+export const MANAGEMENT_MATRIX: CategoryManagement[] = [
+  {
+    subcategory: 'A1',
+    anticoagulation: {
+      text: 'Anticoagulation recommended for most incidental PE',
+      cor: '1',
+      loe: 'C-LD',
+    },
+    systemicLysis: {
+      text: 'Systemic thrombolysis causes harm in subclinical PE',
+      cor: '3-harm',
+      loe: 'C-EO',
+    },
+    cdl: {
+      text: 'Catheter-directed therapy offers no benefit',
+      cor: '3-no-benefit',
+      loe: 'C-EO',
+    },
+    mechanicalThrombectomy: {
+      text: 'Mechanical thrombectomy offers no benefit',
+      cor: '3-no-benefit',
+      loe: 'C-EO',
+    },
+    surgicalEmbolectomy: {
+      text: 'Surgical embolectomy offers no benefit',
+      cor: '3-no-benefit',
+      loe: 'C-EO',
+    },
+    pertRecommended: false,
+    ecmoConsideration: false,
+    monitoringLevel: 'outpatient',
+    notes: ['Consider serial imaging for subsegmental incidental PE', 'Anticoagulation duration per provoking factor'],
+  },
+  {
+    subcategory: 'B1',
+    anticoagulation: {
+      text: 'Anticoagulation is first-line treatment',
+      cor: '1',
+      loe: 'A',
+    },
+    systemicLysis: {
+      text: 'Systemic thrombolysis causes harm in low-risk PE',
+      cor: '3-harm',
+      loe: 'B-R',
+    },
+    cdl: {
+      text: 'Catheter-directed therapy offers no benefit',
+      cor: '3-no-benefit',
+      loe: 'C-EO',
+    },
+    mechanicalThrombectomy: {
+      text: 'Mechanical thrombectomy offers no benefit',
+      cor: '3-no-benefit',
+      loe: 'C-EO',
+    },
+    surgicalEmbolectomy: {
+      text: 'Surgical embolectomy offers no benefit',
+      cor: '3-no-benefit',
+      loe: 'C-EO',
+    },
+    pertRecommended: false,
+    ecmoConsideration: false,
+    monitoringLevel: 'outpatient',
+    notes: ['Outpatient management preferred if Hestia-eligible', 'Subsegmental PE may have different recurrence risk'],
+  },
+  {
+    subcategory: 'B2',
+    anticoagulation: {
+      text: 'Anticoagulation is first-line treatment',
+      cor: '1',
+      loe: 'A',
+    },
+    systemicLysis: {
+      text: 'Systemic thrombolysis causes harm in low-risk PE',
+      cor: '3-harm',
+      loe: 'B-R',
+    },
+    cdl: {
+      text: 'Catheter-directed therapy offers no benefit',
+      cor: '3-no-benefit',
+      loe: 'C-EO',
+    },
+    mechanicalThrombectomy: {
+      text: 'Mechanical thrombectomy offers no benefit',
+      cor: '3-no-benefit',
+      loe: 'C-EO',
+    },
+    surgicalEmbolectomy: {
+      text: 'Surgical embolectomy offers no benefit',
+      cor: '3-no-benefit',
+      loe: 'C-EO',
+    },
+    pertRecommended: false,
+    ecmoConsideration: false,
+    monitoringLevel: 'outpatient',
+    notes: ['Outpatient management if Hestia-eligible', 'Consider brief observation period before discharge'],
+  },
+  {
+    subcategory: 'C1',
+    anticoagulation: {
+      text: 'Anticoagulation is first-line treatment',
+      cor: '1',
+      loe: 'A',
+    },
+    systemicLysis: {
+      text: 'Systemic thrombolysis causes harm in absence of hemodynamic compromise',
+      cor: '3-harm',
+      loe: 'B-R',
+    },
+    cdl: {
+      text: 'Catheter-directed therapy offers no benefit',
+      cor: '3-no-benefit',
+      loe: 'C-EO',
+    },
+    mechanicalThrombectomy: {
+      text: 'Mechanical thrombectomy offers no benefit',
+      cor: '3-no-benefit',
+      loe: 'C-EO',
+    },
+    surgicalEmbolectomy: {
+      text: 'Surgical embolectomy offers no benefit',
+      cor: '3-no-benefit',
+      loe: 'C-EO',
+    },
+    pertRecommended: false,
+    ecmoConsideration: false,
+    monitoringLevel: 'ward',
+    notes: ['Monitor for clinical deterioration', 'Serial troponin and echocardiography if clinical concern'],
+  },
+  {
+    subcategory: 'C2',
+    anticoagulation: {
+      text: 'Anticoagulation is first-line treatment',
+      cor: '1',
+      loe: 'A',
+    },
+    systemicLysis: {
+      text: 'Systemic thrombolysis may cause more harm than benefit',
+      cor: '3-harm',
+      loe: 'B-R',
+    },
+    cdl: {
+      text: 'Catheter-directed therapy may be considered if clinical deterioration',
+      cor: '2b',
+      loe: 'B-NR',
+    },
+    mechanicalThrombectomy: {
+      text: 'Mechanical thrombectomy may be considered if clinical deterioration',
+      cor: '2b',
+      loe: 'B-NR',
+    },
+    surgicalEmbolectomy: {
+      text: 'Surgical embolectomy offers no benefit',
+      cor: '3-no-benefit',
+      loe: 'C-EO',
+    },
+    pertRecommended: true,
+    ecmoConsideration: false,
+    monitoringLevel: 'stepdown',
+    notes: ['Activate PERT for multidisciplinary input', 'Close hemodynamic monitoring', 'Reassess for escalation if deterioration'],
+  },
+  {
+    subcategory: 'C3',
+    anticoagulation: {
+      text: 'Anticoagulation is first-line treatment',
+      cor: '1',
+      loe: 'A',
+    },
+    systemicLysis: {
+      text: 'Systemic thrombolysis may be considered if signs of clinical deterioration',
+      cor: '2b',
+      loe: 'B-R',
+    },
+    cdl: {
+      text: 'Catheter-directed therapy may be considered',
+      cor: '2b',
+      loe: 'B-NR',
+    },
+    mechanicalThrombectomy: {
+      text: 'Mechanical thrombectomy may be considered',
+      cor: '2b',
+      loe: 'B-NR',
+    },
+    surgicalEmbolectomy: {
+      text: 'Surgical embolectomy offers no benefit unless deterioration',
+      cor: '3-no-benefit',
+      loe: 'C-EO',
+    },
+    pertRecommended: true,
+    ecmoConsideration: false,
+    monitoringLevel: 'stepdown',
+    notes: ['Activate PERT', 'Highest risk submassive group', 'Close monitoring for hemodynamic deterioration', 'Low threshold for escalation to advanced therapy'],
+  },
+  {
+    subcategory: 'D1',
+    anticoagulation: {
+      text: 'Anticoagulation is first-line treatment',
+      cor: '1',
+      loe: 'A',
+    },
+    systemicLysis: {
+      text: 'Systemic thrombolysis may be considered',
+      cor: '2b',
+      loe: 'B-R',
+    },
+    cdl: {
+      text: 'Catheter-directed therapy may be considered',
+      cor: '2b',
+      loe: 'B-NR',
+    },
+    mechanicalThrombectomy: {
+      text: 'Mechanical thrombectomy may be considered',
+      cor: '2b',
+      loe: 'B-NR',
+    },
+    surgicalEmbolectomy: {
+      text: 'Surgical embolectomy may be considered',
+      cor: '2b',
+      loe: 'C-LD',
+    },
+    pertRecommended: true,
+    ecmoConsideration: false,
+    monitoringLevel: 'icu',
+    notes: ['Activate PERT', 'ICU-level monitoring', 'Reassess hemodynamics after fluid resuscitation', 'Prepare for escalation if not improving'],
+  },
+  {
+    subcategory: 'D2',
+    anticoagulation: {
+      text: 'Anticoagulation is first-line treatment',
+      cor: '1',
+      loe: 'A',
+    },
+    systemicLysis: {
+      text: 'Systemic thrombolysis may be considered',
+      cor: '2b',
+      loe: 'B-R',
+    },
+    cdl: {
+      text: 'Catheter-directed therapy may be considered',
+      cor: '2b',
+      loe: 'B-NR',
+    },
+    mechanicalThrombectomy: {
+      text: 'Mechanical thrombectomy may be considered',
+      cor: '2b',
+      loe: 'B-NR',
+    },
+    surgicalEmbolectomy: {
+      text: 'Surgical embolectomy may be considered',
+      cor: '2b',
+      loe: 'C-LD',
+    },
+    pertRecommended: true,
+    ecmoConsideration: false,
+    monitoringLevel: 'icu',
+    notes: ['Activate PERT', 'ICU-level monitoring', 'End-organ dysfunction present -- urgent intervention warranted', 'Consider advanced therapy sooner than D1'],
+  },
+  {
+    subcategory: 'E1',
+    anticoagulation: {
+      text: 'Anticoagulation is first-line treatment',
+      cor: '1',
+      loe: 'A',
+    },
+    systemicLysis: {
+      text: 'Systemic thrombolysis is reasonable as first-line reperfusion',
+      cor: '2a',
+      loe: 'B-R',
+    },
+    cdl: {
+      text: 'Catheter-directed therapy is reasonable if expertise available',
+      cor: '2a',
+      loe: 'B-NR',
+    },
+    mechanicalThrombectomy: {
+      text: 'Mechanical thrombectomy is reasonable if expertise available',
+      cor: '2a',
+      loe: 'B-NR',
+    },
+    surgicalEmbolectomy: {
+      text: 'Surgical embolectomy is reasonable if expertise available',
+      cor: '2a',
+      loe: 'C-LD',
+    },
+    pertRecommended: true,
+    ecmoConsideration: false,
+    monitoringLevel: 'icu',
+    notes: ['Emergent PERT activation', 'Cardiogenic shock -- immediate reperfusion decision required', 'Vasopressor and inotropic support', 'Consider surgical vs catheter-based approach based on institutional expertise'],
+  },
+  {
+    subcategory: 'E2',
+    anticoagulation: {
+      text: 'Anticoagulation is first-line treatment',
+      cor: '1',
+      loe: 'A',
+    },
+    systemicLysis: {
+      text: 'Systemic thrombolysis is reasonable during cardiac arrest',
+      cor: '2a',
+      loe: 'C-LD',
+    },
+    cdl: {
+      text: 'Catheter-directed therapy not applicable during active cardiac arrest',
+      cor: '3-no-benefit',
+      loe: 'C-EO',
+      caveat: 'May reconsider post-ROSC',
+    },
+    mechanicalThrombectomy: {
+      text: 'Mechanical thrombectomy not applicable during active cardiac arrest',
+      cor: '3-no-benefit',
+      loe: 'C-EO',
+      caveat: 'May reconsider post-ROSC',
+    },
+    surgicalEmbolectomy: {
+      text: 'Surgical embolectomy not applicable during active cardiac arrest',
+      cor: '3-no-benefit',
+      loe: 'C-EO',
+      caveat: 'May reconsider post-ROSC',
+    },
+    pertRecommended: true,
+    ecmoConsideration: true,
+    monitoringLevel: 'icu',
+    notes: ['Emergent PERT activation', 'ECMO consideration for refractory arrest', 'Systemic thrombolysis during CPR', 'Reclassify after ROSC'],
+  },
+];

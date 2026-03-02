@@ -73,8 +73,8 @@ Follows the guideline's Figure 3 flowchart:
 - **Intermediate PTP (15–50%)**: D-dimer + YEARS directly
 - **High PTP (>50%)**: Straight to imaging, no D-dimer
 
-### Chat persistence and read-aloud
-Chat messages are stored in a Zustand store (`chatStore.ts`) so they survive client-side navigation but are cleared on page refresh (no localStorage). Assistant responses can be read aloud using the browser's Web Speech API — the speak button appears on each assistant message bubble.
+### Chat persistence, read-aloud, and response modes
+Chat messages are stored in a Zustand store (`chatStore.ts`) so they survive client-side navigation but are cleared on page refresh (no localStorage). Assistant responses can be read aloud using the browser's Web Speech API — the speak button appears on each assistant message bubble. Users can toggle between **Explanatory** (default, full detailed answers) and **Brief** (2-3 sentence concise answers) modes. The mode is sent to the API route which prepends an instruction prefix to the question before forwarding to NotebookLM.
 
 ### COR/LOE badges
 Every recommendation displays Class of Recommendation and Level of Evidence badges. Colors defined in `src/types/guideline.ts`.

@@ -13,11 +13,14 @@ const SUGGESTED_QUESTIONS = [
   'What is the recommended anticoagulation for acute PE?',
 ];
 
+type ChatMode = 'explanatory' | 'brief';
+
 export default function ChatPage() {
   const { messages, addMessage, clearMessages } = useChatStore();
   const [input, setInput] = useState('');
   const [loading, setLoading] = useState(false);
   const [speakingIndex, setSpeakingIndex] = useState<number | null>(null);
+  const [mode, setMode] = useState<ChatMode>('explanatory');
   const scrollRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLTextAreaElement>(null);
 
@@ -61,7 +64,7 @@ export default function ChatPage() {
       const res = await fetch('/api/chat', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ question: trimmed }),
+        body: JSON.stringify({ question: trimmed, mode }),
       });
 
       if (!res.ok) throw new Error('Request failed');
@@ -202,28 +205,55 @@ export default function ChatPage() {
         </div>
 
         {/* Input */}
-        <form onSubmit={handleSubmit} className="border-t border-gray-200 px-4 py-3">
-          <div className="mx-auto flex max-w-2xl items-end gap-2">
-            <textarea
-              ref={inputRef}
-              value={input}
-              onChange={(e) => setInput(e.target.value)}
-              onKeyDown={handleKeyDown}
-              placeholder="Ask about the PE guideline..."
-              rows={1}
-              className="flex-1 resize-none rounded-xl border border-gray-300 px-3 py-2 text-sm outline-none transition-colors placeholder:text-gray-400 focus:border-blue-400 focus:ring-1 focus:ring-blue-400"
-              disabled={loading}
-            />
+        <div className="border-t border-gray-200 px-4 py-3">
+          <div className="mx-auto mb-2 flex max-w-2xl items-center gap-1.5">
+            <span className="text-xs text-gray-400">Mode:</span>
             <button
-              type="submit"
-              disabled={loading || !input.trim()}
-              className="rounded-xl bg-blue-600 p-2.5 text-white transition-colors hover:bg-blue-700 disabled:opacity-40"
-              aria-label="Send message"
+              type="button"
+              onClick={() => setMode('brief')}
+              className={`rounded-full px-2.5 py-0.5 text-xs font-medium transition-colors ${
+                mode === 'brief'
+                  ? 'bg-blue-600 text-white'
+                  : 'bg-gray-100 text-gray-500 hover:bg-gray-200'
+              }`}
             >
-              <Send className="h-4 w-4" />
+              Brief
+            </button>
+            <button
+              type="button"
+              onClick={() => setMode('explanatory')}
+              className={`rounded-full px-2.5 py-0.5 text-xs font-medium transition-colors ${
+                mode === 'explanatory'
+                  ? 'bg-blue-600 text-white'
+                  : 'bg-gray-100 text-gray-500 hover:bg-gray-200'
+              }`}
+            >
+              Explanatory
             </button>
           </div>
-        </form>
+          <form onSubmit={handleSubmit}>
+            <div className="mx-auto flex max-w-2xl items-end gap-2">
+              <textarea
+                ref={inputRef}
+                value={input}
+                onChange={(e) => setInput(e.target.value)}
+                onKeyDown={handleKeyDown}
+                placeholder="Ask about the PE guideline..."
+                rows={1}
+                className="flex-1 resize-none rounded-xl border border-gray-300 px-3 py-2 text-sm outline-none transition-colors placeholder:text-gray-400 focus:border-blue-400 focus:ring-1 focus:ring-blue-400"
+                disabled={loading}
+              />
+              <button
+                type="submit"
+                disabled={loading || !input.trim()}
+                className="rounded-xl bg-blue-600 p-2.5 text-white transition-colors hover:bg-blue-700 disabled:opacity-40"
+                aria-label="Send message"
+              >
+                <Send className="h-4 w-4" />
+              </button>
+            </div>
+          </form>
+        </div>
       </div>
     </PageContainer>
   );

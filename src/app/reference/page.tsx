@@ -1,5 +1,6 @@
 'use client';
 
+import Image from 'next/image';
 import { Tabs, TabsList, TabsTrigger, TabsContent } from '@/components/ui/Tabs';
 import { Badge } from '@/components/ui/Badge';
 import { CATEGORY_DEFINITIONS } from '@/data/categoryDefinitions';
@@ -696,6 +697,57 @@ function FollowUpTab() {
   );
 }
 
+// ─── Tab 6: Key Figures ──────────────────────────────────────────────────────
+
+const GUIDELINE_FIGURES = [
+  {
+    src: '/images/figure1-clinical-evaluation.png',
+    alt: 'Figure 1: Clinical Evaluation of Patients With Suspected Acute PE',
+    title: 'Figure 1: Clinical Evaluation',
+    description: 'Diagnostic algorithm for clinical evaluation of patients with suspected acute PE. Branches by pre-test probability (<15%, 15–50%, >50%) through PERC, D-dimer/YEARS, and imaging pathways.',
+  },
+  {
+    src: '/images/figure2-pe-categories.png',
+    alt: 'Figure 2: AHA/ACC Acute PE Clinical Categories (A–E)',
+    title: 'Figure 2: PE Clinical Categories',
+    description: 'The new A–E clinical category system with subcategories (A1, B1–B2, C1–C3, D1–D2, E1–E2) and R modifier for respiratory compromise.',
+  },
+  {
+    src: '/images/figure3-management.png',
+    alt: 'Figure 3: Initial Assessment and Management by AHA/ACC Acute PE Clinical Categories',
+    title: 'Figure 3: Management by Category',
+    description: 'Management recommendations by PE category including anticoagulation, systemic lysis, catheter-directed therapy, mechanical thrombectomy, surgical embolectomy, PERT activation, and ECMO.',
+  },
+];
+
+function KeyFiguresTab() {
+  return (
+    <div className="space-y-8">
+      <p className="text-sm text-gray-600">
+        Key figures from the 2026 AHA/ACC/ACCP/ACEP/CHEST/SCAI/SHM/SIR/SVM/SVN Guideline for Management of Acute Pulmonary Embolism.
+      </p>
+      {GUIDELINE_FIGURES.map((fig) => (
+        <div key={fig.src} className="rounded-lg border border-gray-200 bg-white shadow-sm overflow-hidden">
+          <div className="border-b border-gray-100 p-4">
+            <h3 className="text-base font-semibold text-gray-900">{fig.title}</h3>
+            <p className="mt-1 text-sm text-gray-500">{fig.description}</p>
+          </div>
+          <div className="p-4">
+            <Image
+              src={fig.src}
+              alt={fig.alt}
+              width={1200}
+              height={800}
+              className="w-full h-auto rounded-md"
+              priority
+            />
+          </div>
+        </div>
+      ))}
+    </div>
+  );
+}
+
 // ─── Main Page ────────────────────────────────────────────────────────────────
 
 export default function ReferencePage() {
@@ -708,14 +760,19 @@ export default function ReferencePage() {
         </p>
       </div>
 
-      <Tabs defaultValue="categories">
+      <Tabs defaultValue="figures">
         <TabsList>
+          <TabsTrigger value="figures">Key Figures</TabsTrigger>
           <TabsTrigger value="categories">PE Categories</TabsTrigger>
           <TabsTrigger value="scoring">Scoring Systems</TabsTrigger>
           <TabsTrigger value="management">Management Matrix</TabsTrigger>
           <TabsTrigger value="anticoagulation">Anticoagulation</TabsTrigger>
           <TabsTrigger value="followup">Follow-up</TabsTrigger>
         </TabsList>
+
+        <TabsContent value="figures">
+          <KeyFiguresTab />
+        </TabsContent>
 
         <TabsContent value="categories">
           <PECategoriesTab />

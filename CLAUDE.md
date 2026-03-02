@@ -87,6 +87,55 @@ npm run build    # Production build
 npm run lint     # ESLint
 ```
 
+## Chat / NotebookLM Proxy Infrastructure
+
+The "Ask PE Guide" chat requires a **shared nlm-proxy** running on the host Mac. The full chain:
+
+```
+Browser → Vercel /api/chat → Tailscale Funnel → Mac localhost:3847 → nlm CLI → NotebookLM
+```
+
+### Components
+
+| Component | Location | Purpose |
+|-----------|----------|---------|
+| nlm-proxy server | `/Users/home/projects/cto-coach/nlm-proxy/server.js` | Express server wrapping the `nlm` CLI. Shared by PE2026 and cto-coach (each passes its own `notebook_id`). |
+| launchd agent | `~/Library/LaunchAgents/com.cto-coach.nlm-proxy.plist` | Keeps the proxy alive (`KeepAlive: true`, `RunAtLoad: true`). Auto-restarts on crash or reboot. |
+| Tailscale Funnel | `https://homes-imac.tail459031.ts.net` → `127.0.0.1:3847` | Exposes the proxy to the public internet so Vercel serverless functions can reach it. |
+| Vercel env vars | `NLM_PROXY_URL`, `NLM_PROXY_KEY` | Tell the deployed `/api/chat` route where the proxy lives. Without these, the route defaults to `localhost:3847` which only works in local dev. |
+| PE2026 notebook | ID `899a7512-2fab-4643-a85d-9f1ae0b73ea7` | The NotebookLM notebook containing the full guideline text. |
+
+### Keeping chat working
+
+1. **Proxy must be running** — launchd handles this automatically. Verify: `curl http://localhost:3847/health`
+2. **Auth must be fresh** — The proxy runs an auth keepalive every 20 minutes. If auth fails, run `nlm login` manually.
+3. **Tailscale Funnel must be active** — Verify: `tailscale funnel status`. If off, re-enable: `tailscale funnel 3847`
+4. **Vercel env vars must be set** — `NLM_PROXY_URL=https://homes-imac.tail459031.ts.net` and `NLM_PROXY_KEY=cto-coach-2026`. Without these, deployed chat silently fails (502).
+
+### Troubleshooting
+
+```bash
+# Check proxy status
+curl http://localhost:3847/health
+tail -f /tmp/nlm-proxy.log
+
+# Restart proxy
+launchctl unload ~/Library/LaunchAgents/com.cto-coach.nlm-proxy.plist
+launchctl load ~/Library/LaunchAgents/com.cto-coach.nlm-proxy.plist
+
+# Refresh auth
+nlm login
+
+# Update nlm CLI
+uv tool upgrade notebooklm-mcp-cli
+
+# Check Tailscale Funnel
+tailscale funnel status
+
+# Check Vercel env vars
+npx vercel env ls
+```
+
 ## Conventions
 
 - All interactive pages/components use `'use client'` directive

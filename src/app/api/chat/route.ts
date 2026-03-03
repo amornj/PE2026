@@ -5,25 +5,73 @@ const NLM_PROXY_KEY = process.env.NLM_PROXY_KEY || '';
 const NOTEBOOK_ID = '899a7512-2fab-4643-a85d-9f1ae0b73ea7';
 
 const MODE_PREFIXES: Record<string, string> = {
-  brief: 'Answer with markdown bullet points (use "- " prefix). Maximum 4-5 bullets, one line each. No paragraphs, no preamble.\n\n',
-  explanatory: 'Format your answer using markdown bullet points (use "- " prefix) and short paragraphs. Use markdown headers (##) for distinct sections. Avoid long unbroken paragraphs.\n\n',
+  brief: 'Answer as a numbered list. Each item starts with a bold key phrase. Maximum 4-5 items. Example format:\n1. **Key phrase** rest of the point.\n2. **Key phrase** rest of the point.\n\n',
+  explanatory: 'Answer as a numbered list. Each item must start with a bold key phrase summarizing that point. Example format:\n1. **Key phrase** rest of the explanation.\n2. **Key phrase** rest of the explanation.\nUse this numbered+bold format for all points.\n\n',
 };
 
-// NotebookLM often returns lines separated by single \n without markdown bullets.
-// Markdown treats single \n as same paragraph (wall of text).
-// This function ensures each line becomes a visible bullet point.
+// NotebookLM often ignores formatting instructions and returns plain text.
+// This post-processes the response into numbered items with bold lead-ins.
 function formatAnswer(raw: string): string {
-  return raw
-    .split('\n')
-    .map((line) => {
-      const trimmed = line.trim();
+  // If already well-formatted with numbered list + bold, return as-is
+  if (/^\d+\.\s+\*\*/.test(raw.trim())) return raw;
+
+  // Split into lines, filter empties
+  const lines = raw.split('\n').map((l) => l.trim()).filter(Boolean);
+
+  // Check if it's already a numbered or bulleted list
+  const isAlreadyList = lines.length > 1 && lines.every(
+    (l) => /^[-*•]\s|^\d+[.)]\s|^#+\s/.test(l)
+  );
+
+  if (isAlreadyList) {
+    // Already a list — just ensure bold on first few words and double-newline spacing
+    return lines
+      .map((line) => {
+        if (/\*\*/.test(line)) return line; // already has bold
+        return addBoldLeadIn(line);
+      })
+      .join('\n\n');
+  }
+
+  // Plain text — split on sentence boundaries and convert to numbered list
+  const sentences = splitSentences(raw);
+  if (sentences.length <= 1) return raw; // single sentence, leave alone
+
+  return sentences
+    .map((s, i) => {
+      const trimmed = s.trim();
       if (!trimmed) return '';
-      // Already a markdown bullet, header, or numbered list — keep as-is
-      if (/^[-*•]\s|^#+\s|^\d+[.)]\s/.test(trimmed)) return trimmed;
-      // Plain text line — convert to bullet
-      return `- ${trimmed}`;
+      // Bold the first few words (up to first comma, colon, or 4th word)
+      const boldMatch = trimmed.match(/^(.+?(?:[:,]|\s\S+){0,3}?\S+)\s+(.*)/);
+      if (boldMatch) {
+        return `${i + 1}. **${boldMatch[1]}** ${boldMatch[2]}`;
+      }
+      return `${i + 1}. ${trimmed}`;
     })
+    .filter(Boolean)
     .join('\n\n');
+}
+
+function addBoldLeadIn(line: string): string {
+  // Strip existing prefix (bullet or number)
+  const prefixMatch = line.match(/^([-*•]\s+|\d+[.)]\s+)/);
+  const prefix = prefixMatch ? prefixMatch[0] : '';
+  const content = prefixMatch ? line.slice(prefix.length) : line;
+  // Bold up to first colon/comma or first 3-5 words
+  const boldMatch = content.match(/^(.+?(?:[:,]|(?:\s+\S+){2,4}))\s+(.*)/);
+  if (boldMatch) {
+    return `${prefix}**${boldMatch[1].replace(/[:,]\s*$/, '')}** ${boldMatch[2]}`;
+  }
+  return line;
+}
+
+function splitSentences(text: string): string[] {
+  // Split on period/question mark/exclamation followed by space+capital or newline
+  // Avoid splitting on abbreviations like "e.g." or "Dr." or numbers like "1."
+  return text
+    .split(/(?<=[.!?])\s+(?=[A-Z])/)
+    .map((s) => s.trim())
+    .filter(Boolean);
 }
 
 export async function POST(req: NextRequest) {

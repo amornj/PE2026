@@ -9,69 +9,63 @@ const MODE_PREFIXES: Record<string, string> = {
   explanatory: 'Answer as a numbered list. Each item must start with a bold key phrase summarizing that point. Example format:\n1. **Key phrase** rest of the explanation.\n2. **Key phrase** rest of the explanation.\nUse this numbered+bold format for all points.\n\n',
 };
 
-// NotebookLM often ignores formatting instructions and returns plain text.
-// This post-processes the response into numbered items with bold lead-ins.
+// Post-process NotebookLM response into numbered list with bold lead-ins.
+// Handles three cases:
+//   1. Already numbered+bold (e.g. "1. **Key** text") → return as-is
+//   2. Bold lead-ins without numbers (e.g. "**Key.** text\n**Key.** text") → add numbers + spacing
+//   3. Plain text → split on sentences, number them, bold first phrase
 function formatAnswer(raw: string): string {
-  // If already well-formatted with numbered list + bold, return as-is
-  if (/^\d+\.\s+\*\*/.test(raw.trim())) return raw;
+  const trimmed = raw.trim();
 
-  // Split into lines, filter empties
-  const lines = raw.split('\n').map((l) => l.trim()).filter(Boolean);
-
-  // Check if it's already a numbered or bulleted list
-  const isAlreadyList = lines.length > 1 && lines.every(
-    (l) => /^[-*•]\s|^\d+[.)]\s|^#+\s/.test(l)
-  );
-
-  if (isAlreadyList) {
-    // Already a list — just ensure bold on first few words and double-newline spacing
-    return lines
-      .map((line) => {
-        if (/\*\*/.test(line)) return line; // already has bold
-        return addBoldLeadIn(line);
-      })
-      .join('\n\n');
+  // Case 1: already numbered + bold — just ensure spacing
+  if (/^\d+\.\s+\*\*/.test(trimmed)) {
+    return trimmed.replace(/\n(?=\d+\.\s)/g, '\n\n');
   }
 
-  // Plain text — split on sentence boundaries and convert to numbered list
-  const sentences = splitSentences(raw);
-  if (sentences.length <= 1) return raw; // single sentence, leave alone
+  // Case 2: has bold lead-ins (**phrase**) but no numbers — split on bold markers
+  if (/\*\*[^*]+\*\*/.test(trimmed)) {
+    // Split on bold patterns that start a new point (newline or start-of-string before **)
+    const parts = trimmed.split(/(?:^|\n)\s*(?=\*\*)/).filter(Boolean);
+    if (parts.length > 1) {
+      return parts
+        .map((part, i) => `${i + 1}. ${part.trim()}`)
+        .join('\n\n');
+    }
+  }
 
-  return sentences
-    .map((s, i) => {
-      const trimmed = s.trim();
-      if (!trimmed) return '';
-      // Bold the first few words (up to first comma, colon, or 4th word)
-      const boldMatch = trimmed.match(/^(.+?(?:[:,]|\s\S+){0,3}?\S+)\s+(.*)/);
-      if (boldMatch) {
-        return `${i + 1}. **${boldMatch[1]}** ${boldMatch[2]}`;
+  // Case 3: plain text — split into separate points and format
+  // First try splitting on newlines
+  let points = trimmed.split('\n').map((l) => l.trim()).filter(Boolean);
+
+  // If only one "line" (no newlines), split on sentence boundaries
+  if (points.length <= 1) {
+    points = trimmed
+      .split(/(?<=[.!?])\s+(?=[A-Z])/)
+      .map((s) => s.trim())
+      .filter(Boolean);
+  }
+
+  if (points.length <= 1) return trimmed; // truly single sentence
+
+  return points
+    .map((point, i) => {
+      // Strip existing bullet/number prefix
+      const stripped = point.replace(/^[-*•]\s+|^\d+[.)]\s+/, '');
+      // If already has bold, just add number
+      if (/\*\*/.test(stripped)) return `${i + 1}. ${stripped}`;
+      // Bold text before first period+space, colon, or dash separator
+      const leadMatch = stripped.match(/^([^.:\-—]+?[.:\-—])\s*(.*)/);
+      if (leadMatch) {
+        return `${i + 1}. **${leadMatch[1]}** ${leadMatch[2]}`;
       }
-      return `${i + 1}. ${trimmed}`;
+      // Fallback: bold first 3-4 words
+      const words = stripped.split(/\s+/);
+      const boldCount = Math.min(4, Math.ceil(words.length / 3));
+      const boldPart = words.slice(0, boldCount).join(' ');
+      const rest = words.slice(boldCount).join(' ');
+      return rest ? `${i + 1}. **${boldPart}** ${rest}` : `${i + 1}. ${stripped}`;
     })
-    .filter(Boolean)
     .join('\n\n');
-}
-
-function addBoldLeadIn(line: string): string {
-  // Strip existing prefix (bullet or number)
-  const prefixMatch = line.match(/^([-*•]\s+|\d+[.)]\s+)/);
-  const prefix = prefixMatch ? prefixMatch[0] : '';
-  const content = prefixMatch ? line.slice(prefix.length) : line;
-  // Bold up to first colon/comma or first 3-5 words
-  const boldMatch = content.match(/^(.+?(?:[:,]|(?:\s+\S+){2,4}))\s+(.*)/);
-  if (boldMatch) {
-    return `${prefix}**${boldMatch[1].replace(/[:,]\s*$/, '')}** ${boldMatch[2]}`;
-  }
-  return line;
-}
-
-function splitSentences(text: string): string[] {
-  // Split on period/question mark/exclamation followed by space+capital or newline
-  // Avoid splitting on abbreviations like "e.g." or "Dr." or numbers like "1."
-  return text
-    .split(/(?<=[.!?])\s+(?=[A-Z])/)
-    .map((s) => s.trim())
-    .filter(Boolean);
 }
 
 export async function POST(req: NextRequest) {

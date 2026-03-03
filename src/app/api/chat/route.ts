@@ -5,8 +5,8 @@ const NLM_PROXY_KEY = process.env.NLM_PROXY_KEY || '';
 const NOTEBOOK_ID = '899a7512-2fab-4643-a85d-9f1ae0b73ea7';
 
 const MODE_PREFIXES: Record<string, string> = {
-  brief: 'Answer in 2-3 concise sentences. Be direct, no preamble.\n\n',
-  explanatory: '',
+  brief: 'Answer with short bullet points only. Maximum 4-5 bullets, one line each. No paragraphs, no preamble.\n\n',
+  explanatory: 'Format your answer using bullet points and short paragraphs for easy scanning. Use headers for distinct sections. Avoid long unbroken paragraphs.\n\n',
 };
 
 export async function POST(req: NextRequest) {

@@ -5,9 +5,26 @@ const NLM_PROXY_KEY = process.env.NLM_PROXY_KEY || '';
 const NOTEBOOK_ID = '899a7512-2fab-4643-a85d-9f1ae0b73ea7';
 
 const MODE_PREFIXES: Record<string, string> = {
-  brief: 'Answer with short bullet points only. Maximum 4-5 bullets, one line each. No paragraphs, no preamble.\n\n',
-  explanatory: 'Format your answer using bullet points and short paragraphs for easy scanning. Use headers for distinct sections. Avoid long unbroken paragraphs.\n\n',
+  brief: 'Answer with markdown bullet points (use "- " prefix). Maximum 4-5 bullets, one line each. No paragraphs, no preamble.\n\n',
+  explanatory: 'Format your answer using markdown bullet points (use "- " prefix) and short paragraphs. Use markdown headers (##) for distinct sections. Avoid long unbroken paragraphs.\n\n',
 };
+
+// NotebookLM often returns lines separated by single \n without markdown bullets.
+// Markdown treats single \n as same paragraph (wall of text).
+// This function ensures each line becomes a visible bullet point.
+function formatAnswer(raw: string): string {
+  return raw
+    .split('\n')
+    .map((line) => {
+      const trimmed = line.trim();
+      if (!trimmed) return '';
+      // Already a markdown bullet, header, or numbered list — keep as-is
+      if (/^[-*•]\s|^#+\s|^\d+[.)]\s/.test(trimmed)) return trimmed;
+      // Plain text line — convert to bullet
+      return `- ${trimmed}`;
+    })
+    .join('\n\n');
+}
 
 export async function POST(req: NextRequest) {
   try {
@@ -44,7 +61,7 @@ export async function POST(req: NextRequest) {
     const data = await response.json();
 
     return NextResponse.json({
-      answer: data.answer ?? '',
+      answer: formatAnswer(data.answer ?? ''),
       sources: data.sources ?? [],
     });
   } catch (err) {

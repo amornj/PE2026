@@ -26,6 +26,7 @@ const initialEvaluation: EvaluationData = {
   },
   wellsScore: null,
   genevaScore: null,
+  percResult: null,
   dDimer: null,
   yearsAlgorithm: null,
   imaging: {

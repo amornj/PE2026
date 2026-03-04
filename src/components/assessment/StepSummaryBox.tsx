@@ -28,7 +28,7 @@ function naturalList(items: string[]): string {
 /* ───────── summary generators per step ───────── */
 
 function useEvaluationSummary(): string[] {
-  const { suspicion, wellsScore, genevaScore, dDimer, yearsAlgorithm, peConfirmed } =
+  const { suspicion, wellsScore, genevaScore, percResult, dDimer, yearsAlgorithm, peConfirmed } =
     useAssessmentStore((s) => s.evaluation);
 
   return useMemo(() => {
@@ -60,7 +60,15 @@ function useEvaluationSummary(): string[] {
 
     // Pathway followed
     if (prob === 'low') {
-      lines.push('Per guideline, PERC rule was assessed first.');
+      if (percResult) {
+        if (percResult.allAbsent) {
+          lines.push('PERC is NEGATIVE (all 8 criteria absent) — PE can be safely ruled out without further testing.');
+        } else {
+          lines.push(`PERC is POSITIVE (${percResult.total} criterion/criteria present) — cannot rule out PE by PERC alone, proceed to D-dimer.`);
+        }
+      } else {
+        lines.push('Per guideline, PERC rule should be assessed first for low PTP.');
+      }
     } else if (prob === 'intermediate') {
       lines.push('Per guideline, D-dimer and YEARS algorithm were applied.');
     } else {
@@ -96,7 +104,7 @@ function useEvaluationSummary(): string[] {
     }
 
     return lines;
-  }, [suspicion, wellsScore, genevaScore, dDimer, yearsAlgorithm, peConfirmed]);
+  }, [suspicion, wellsScore, genevaScore, percResult, dDimer, yearsAlgorithm, peConfirmed]);
 }
 
 function useStratificationSummary(): string[] {

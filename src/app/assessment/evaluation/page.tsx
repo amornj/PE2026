@@ -211,7 +211,7 @@ export default function EvaluationPage() {
           {/* LOW probability branch: PERC first */}
           {probability === 'low' && (
             <>
-              <PERCAssessment onResult={setPercResult} syncedFromPTP={ptpSynced} />
+              <PERCAssessment onResult={(result) => { setPercResult(result); updateEvaluation({ percResult: result }); }} syncedFromPTP={ptpSynced} />
 
               {peExcludedByPerc && (
                 <Alert variant="success">

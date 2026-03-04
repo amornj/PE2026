@@ -1,5 +1,6 @@
 import { PECategory, ClassificationInput } from './classification';
 import { WellsResult, GenevaResult, PESIResult, SPESIResult, BovaResult, HestiaResult } from './scores';
+import type { PERCResult } from '@/lib/scoring/perc';
 
 export type WizardStep = 'evaluation' | 'stratification' | 'management' | 'followup';
 
@@ -32,6 +33,7 @@ export interface EvaluationData {
   suspicion: ClinicalSuspicion;
   wellsScore: WellsResult | null;
   genevaScore: GenevaResult | null;
+  percResult: PERCResult | null;
   dDimer: DDimerResult | null;
   yearsAlgorithm: YEARSResult | null;
   imaging: ImagingResult;

@@ -12,6 +12,7 @@ import { BiomarkerPanel } from '@/components/assessment/BiomarkerPanel';
 import { RVAssessmentPanel } from '@/components/assessment/RVAssessmentPanel';
 import { RespiratoryStatusPanel } from '@/components/assessment/RespiratoryStatusPanel';
 import { CategoryDisplay } from '@/components/assessment/CategoryDisplay';
+import { StepSummaryBox } from '@/components/assessment/StepSummaryBox';
 import { assignCategory } from '@/lib/classification/category';
 import type { HemodynamicStatus, RVAssessment, BiomarkerStatus, RespiratoryStatus } from '@/types/classification';
 import type { PESIResult, SPESIResult } from '@/types/scores';
@@ -163,6 +164,9 @@ export default function StratificationPage() {
 
       {/* Category Display -- THE key visual */}
       <CategoryDisplay category={stratification.category} />
+
+      {/* Step summary box */}
+      <StepSummaryBox step="stratification" />
 
       <div className="flex justify-between pt-4 border-t border-gray-200">
         <Button variant="secondary" onClick={handlePrev} size="lg">

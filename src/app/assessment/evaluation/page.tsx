@@ -11,6 +11,7 @@ import { PERCAssessment, type PTPSyncedFindings } from '@/components/assessment/
 import { DDimerInterpreter } from '@/components/assessment/DDimerInterpreter';
 import { YearsAlgorithm, type YEARSSyncedFromWells } from '@/components/assessment/YearsAlgorithm';
 import { ImagingRecommendation } from '@/components/assessment/ImagingRecommendation';
+import { StepSummaryBox } from '@/components/assessment/StepSummaryBox';
 import { ChevronRight, ArrowDown } from 'lucide-react';
 import type { DDimerResult, YEARSResult, ImagingResult } from '@/types/assessment';
 import type { WellsResult, GenevaResult } from '@/types/scores';
@@ -307,6 +308,9 @@ export default function EvaluationPage() {
           )}
         </>
       )}
+
+      {/* Step summary box */}
+      <StepSummaryBox step="evaluation" />
 
       <div className="flex justify-end pt-4 border-t border-gray-200">
         <Button onClick={handleNext} size="lg">

@@ -10,6 +10,7 @@ import { AnticoagulationHelper } from '@/components/assessment/AnticoagulationHe
 import { AdvancedTherapyPanel } from '@/components/assessment/AdvancedTherapyPanel';
 import { PERTChecklist } from '@/components/assessment/PERTChecklist';
 import { IVCFilterDecisionTree } from '@/components/assessment/IVCFilterDecisionTree';
+import { StepSummaryBox } from '@/components/assessment/StepSummaryBox';
 import type { SpecialPopulation, AnticoagulationPlan, AdvancedTherapyPlan } from '@/types/assessment';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
 
@@ -115,6 +116,9 @@ export default function ManagementPage() {
       />
 
       <IVCFilterDecisionTree onFilterChange={handleIVCFilterChange} />
+
+      {/* Step summary box */}
+      <StepSummaryBox step="management" />
 
       <div className="flex justify-between pt-4 border-t border-gray-200">
         <Button variant="secondary" onClick={handlePrev} size="lg">

@@ -9,6 +9,7 @@ import { CategoryDisplay } from '@/components/assessment/CategoryDisplay';
 import { FollowUpTimeline } from '@/components/assessment/FollowUpTimeline';
 import { AnticoagDurationCalculator } from '@/components/assessment/AnticoagDurationCalculator';
 import { CTEPDScreening } from '@/components/assessment/CTEPDScreening';
+import { StepSummaryBox } from '@/components/assessment/StepSummaryBox';
 import type { AnticoagDuration, CTEPDScreening as CTEPDScreeningData } from '@/types/assessment';
 import { ChevronLeft, RotateCcw } from 'lucide-react';
 
@@ -92,6 +93,9 @@ export default function FollowUpPage() {
         screening={followup.ctephdScreening}
         onScreeningChange={handleScreeningChange}
       />
+
+      {/* Step summary box */}
+      <StepSummaryBox step="followup" />
 
       <div className="flex justify-between pt-4 border-t border-gray-200">
         <Button variant="secondary" onClick={handlePrev} size="lg">
